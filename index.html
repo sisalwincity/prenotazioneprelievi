@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prenotazione Prelievi</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Prenotazione Prelievi</h1>
+        </header>
+        
+        <main>
+            <div class="form-container">
+                <h2>Prenota il tuo prelievo</h2>
+                <p class="info-text">Compila il modulo per prenotare il tuo prelievo (puoi scegliere una data da domani fino a un mese, solo nei giorni da martedì a venerdì)</p>
+                
+                <form id="prenotazioneForm">
+                    <div class="form-group">
+                        <label for="nome">Nome</label>
+                        <input type="text" id="nome" name="nome" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cognome">Cognome</label>
+                        <input type="text" id="cognome" name="cognome" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="data">Data di ritiro</label>
+                        <input type="date" id="data" name="data" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="importo">Importo (€)</label>
+                        <input type="number" id="importo" name="importo" min="1" step="0.01" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">Prenota</button>
+                </form>
+            </div>
+            
+            <div id="conferma" class="hidden">
+                <h2>Prenotazione Confermata</h2>
+                <div class="conferma-details">
+                    <p><strong>Nome:</strong> <span id="conf-nome"></span></p>
+                    <p><strong>Cognome:</strong> <span id="conf-cognome"></span></p>
+                    <p><strong>Data di ritiro:</strong> <span id="conf-data"></span></p>
+                    <p><strong>Importo:</strong> <span id="conf-importo"></span> €</p>
+                </div>
+                <p class="success-message"><i class="fas fa-check-circle"></i> La tua prenotazione è stata registrata con successo!</p>
+                <button id="nuovaPrenotazione" class="btn-secondary">Nuova Prenotazione</button>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Sistema di Prenotazione Prelievi &copy; 2023</p>
+            <a href="admin.html" class="admin-link">Accesso Amministratore</a>
+        </footer>
+    </div>
+    
+    <script src="js/script.js"></script>
+</body>
+</html>
