@@ -3,73 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amministrazione Prenotazioni Prelievi</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Pannello Amministratore - Prenotazione Prelievi</title>
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Amministrazione Prenotazioni Prelievi</h1>
+            <h1>Pannello Amministratore</h1>
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Torna alla Home</a>
         </header>
         
         <main>
-            <!-- Login Form -->
-            <div id="loginForm" class="form-container">
-                <h2>Accesso Amministratore</h2>
-                <form id="adminLoginForm">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required>
-                    </div>
-                    
-                    <button type="submit" class="btn-submit">Accedi</button>
-                </form>
-            </div>
-            
-            <!-- Admin Dashboard -->
-            <div id="adminDashboard" class="admin-dashboard hidden">
+            <!-- Dashboard Amministratore -->
+            <div id="adminDashboard">
                 <div class="dashboard-header">
-                    <h2>Prenotazioni</h2>
+                    <h2>Gestione Prenotazioni</h2>
                     <div class="dashboard-actions">
-                        <button id="refreshBtn" class="btn-action"><i class="fas fa-sync-alt"></i> Aggiorna</button>
-                        <button id="logoutBtn" class="btn-action"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        <button id="refreshBtn" class="btn-primary"><i class="fas fa-sync-alt"></i> Aggiorna</button>
+                        <button id="logoutBtn" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Esci</button>
                     </div>
-                </div>
-                
-                <div class="filter-container">
-                    <div class="form-group">
-                        <label for="filterData">Filtra per data</label>
-                        <input type="date" id="filterData" name="filterData">
-                    </div>
-                    <button id="resetFilterBtn" class="btn-secondary">Resetta Filtri</button>
-                </div>
-                
-                <div class="table-container">
-                    <table id="prenotazioniTable">
-                        <thead>
-                            <tr>
-                                <th data-sort="nome">Nome <i class="fas fa-sort"></i></th>
-                                <th data-sort="cognome">Cognome <i class="fas fa-sort"></i></th>
-                                <th data-sort="data">Data Ritiro <i class="fas fa-sort"></i></th>
-                                <th data-sort="importo">Importo (€) <i class="fas fa-sort"></i></th>
-                                <th data-sort="timestamp">Data Prenotazione <i class="fas fa-sort"></i></th>
-                            </tr>
-                        </thead>
-                        <tbody id="prenotazioniTableBody">
-                            <!-- I dati delle prenotazioni verranno inseriti qui dinamicamente -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div id="noPrenotazioni" class="hidden">
-                    <p>Nessuna prenotazione trovata.</p>
                 </div>
                 
                 <div class="stats-container">
@@ -82,12 +38,47 @@
                         <p id="totalAmount">0.00 €</p>
                     </div>
                 </div>
+                
+                <div class="filter-section">
+                    <div class="search-container">
+                        <div class="search-input-group">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Cerca per nome o cognome..." class="search-input">
+                        </div>
+                    </div>
+                    <div class="filter-container">
+                        <label for="filterData">Filtra per data:</label>
+                        <input type="date" id="filterData">
+                        <button id="resetFilterBtn" class="btn-secondary"><i class="fas fa-times"></i> Reset</button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th data-sort="nome">Nome <i class="fas fa-sort"></i></th>
+                                <th data-sort="cognome">Cognome <i class="fas fa-sort"></i></th>
+                                <th data-sort="data">Data Ritiro <i class="fas fa-sort"></i></th>
+                                <th data-sort="importo">Importo <i class="fas fa-sort"></i></th>
+                                <th data-sort="timestamp">Data Prenotazione <i class="fas fa-sort"></i></th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prenotazioniTableBody">
+                            <!-- Le prenotazioni verranno inserite qui dinamicamente -->
+                        </tbody>
+                    </table>
+                    
+                    <div id="noPrenotazioni" class="no-data-message">
+                        <i class="fas fa-info-circle"></i> Nessuna prenotazione trovata.
+                    </div>
+                </div>
             </div>
         </main>
         
         <footer>
             <p>Sistema di Prenotazione Prelievi &copy; 2023</p>
-            <a href="index.html" class="admin-link">Torna alla Home</a>
         </footer>
     </div>
     

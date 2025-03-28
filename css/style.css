@@ -126,7 +126,7 @@ input[readonly] {
 
 /* Confirmation styles */
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .conferma-details {

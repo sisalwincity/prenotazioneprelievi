@@ -1,21 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Elementi del DOM
-    const loginForm = document.getElementById('loginForm');
-    const adminLoginForm = document.getElementById('adminLoginForm');
     const adminDashboard = document.getElementById('adminDashboard');
     const prenotazioniTableBody = document.getElementById('prenotazioniTableBody');
     const noPrenotazioni = document.getElementById('noPrenotazioni');
     const totalCount = document.getElementById('totalCount');
     const totalAmount = document.getElementById('totalAmount');
     const filterData = document.getElementById('filterData');
+    const searchInput = document.getElementById('searchInput');
     const resetFilterBtn = document.getElementById('resetFilterBtn');
     const refreshBtn = document.getElementById('refreshBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const tableHeaders = document.querySelectorAll('th[data-sort]');
-    
-    // Credenziali di accesso (in un'applicazione reale, questo dovrebbe essere gestito lato server)
-    const ADMIN_USERNAME = 'admin';
-    const ADMIN_PASSWORD = 'admin123';
     
     // Stato dell'applicazione
     let prenotazioni = [];
@@ -25,12 +20,10 @@ document.addEventListener('DOMContentLoaded', function() {
         direction: 'desc'
     };
     
-    // Controlla se l'utente è già autenticato
-    checkAuth();
-    
-    // Event listeners
-    adminLoginForm.addEventListener('submit', handleLogin);
+    // Carica direttamente le prenotazioni all'avvio
+    loadPrenotazioni();
     filterData.addEventListener('change', applyFilters);
+    searchInput.addEventListener('input', applyFilters);
     resetFilterBtn.addEventListener('click', resetFilters);
     refreshBtn.addEventListener('click', loadPrenotazioni);
     logoutBtn.addEventListener('click', logout);
@@ -43,47 +36,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Funzione per verificare l'autenticazione
-    function checkAuth() {
-        const isAuthenticated = sessionStorage.getItem('adminAuthenticated') === 'true';
-        
-        if (isAuthenticated) {
-            showDashboard();
-            loadPrenotazioni();
-        } else {
-            showLoginForm();
-        }
-    }
-    
-    // Funzione per gestire il login
-    function handleLogin(e) {
-        e.preventDefault();
-        
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
-        
-        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-            // Salva lo stato di autenticazione
-            sessionStorage.setItem('adminAuthenticated', 'true');
-            
-            // Mostra la dashboard
-            showDashboard();
-            loadPrenotazioni();
-        } else {
-            alert('Credenziali non valide. Riprova.');
-        }
-    }
-    
-    // Funzione per mostrare il form di login
-    function showLoginForm() {
-        loginForm.classList.remove('hidden');
-        adminDashboard.classList.add('hidden');
-    }
-    
-    // Funzione per mostrare la dashboard
-    function showDashboard() {
-        loginForm.classList.add('hidden');
-        adminDashboard.classList.remove('hidden');
+    // Funzione per il logout
+    function logout() {
+        // Reindirizza alla home page
+        window.location.href = 'index.html';
     }
     
     // Funzione per caricare le prenotazioni dal localStorage
@@ -95,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sortPrenotazioni();
         
         // Applica i filtri correnti
-        if (filterData.value) {
+        if (filterData.value || searchInput.value) {
             applyFilters();
         } else {
             renderPrenotazioni();
@@ -109,14 +65,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Mostra messaggio se non ci sono prenotazioni
         if (filteredPrenotazioni.length === 0) {
-            noPrenotazioni.classList.remove('hidden');
+            noPrenotazioni.style.display = 'block';
             totalCount.textContent = '0';
             totalAmount.textContent = '0.00 €';
             return;
         }
         
         // Nascondi il messaggio se ci sono prenotazioni
-        noPrenotazioni.classList.add('hidden');
+        noPrenotazioni.style.display = 'none';
         
         // Calcola le statistiche
         totalCount.textContent = filteredPrenotazioni.length;
@@ -144,22 +100,84 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${dataRitiroFormattata}</td>
                 <td>${parseFloat(p.importo).toFixed(2)} €</td>
                 <td>${dataPrenotazioneFormattata}</td>
+                <td class="action-cell">
+                    <button class="btn-action btn-danger delete-btn" data-timestamp="${p.timestamp}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
             `;
             
             prenotazioniTableBody.appendChild(row);
         });
+        
+        // Aggiungi event listener per i pulsanti di eliminazione
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const timestamp = this.getAttribute('data-timestamp');
+                deletePrenotazione(timestamp);
+            });
+        });
+    }
+    
+    // Funzione per eliminare una prenotazione
+    function deletePrenotazione(timestamp) {
+        if (confirm('Sei sicuro di voler eliminare questa prenotazione?')) {
+            // Rimuovi la prenotazione dall'array
+            prenotazioni = prenotazioni.filter(p => p.timestamp != timestamp);
+            
+            // Aggiorna il localStorage
+            localStorage.setItem('prenotazioni', JSON.stringify(prenotazioni));
+            
+            // Aggiorna la visualizzazione
+            loadPrenotazioni();
+            
+            // Mostra un messaggio di conferma
+            showNotification('Prenotazione eliminata con successo!', 'success');
+        }
+    }
+    
+    // Funzione per mostrare notifiche
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <span>${message}</span>
+            <button class="close-btn"><i class="fas fa-times"></i></button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Aggiungi event listener per chiudere la notifica
+        notification.querySelector('.close-btn').addEventListener('click', () => {
+            notification.remove();
+        });
+        
+        // Rimuovi automaticamente la notifica dopo 5 secondi
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
     }
     
     // Funzione per applicare i filtri
     function applyFilters() {
         const dataFiltro = filterData.value;
+        const searchFiltro = searchInput.value.toLowerCase();
         
+        filteredPrenotazioni = [...prenotazioni];
+        
+        // Applica filtro per data
         if (dataFiltro) {
-            filteredPrenotazioni = prenotazioni.filter(p => {
+            filteredPrenotazioni = filteredPrenotazioni.filter(p => {
                 return p.data === dataFiltro;
             });
-        } else {
-            filteredPrenotazioni = [...prenotazioni];
+        }
+        
+        // Applica filtro di ricerca
+        if (searchFiltro) {
+            filteredPrenotazioni = filteredPrenotazioni.filter(p => {
+                return p.nome.toLowerCase().includes(searchFiltro) || 
+                       p.cognome.toLowerCase().includes(searchFiltro);
+            });
         }
         
         // Applica l'ordinamento corrente
@@ -172,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Funzione per resettare i filtri
     function resetFilters() {
         filterData.value = '';
+        searchInput.value = '';
         filteredPrenotazioni = [...prenotazioni];
         
         // Applica l'ordinamento corrente
@@ -240,12 +259,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-    // Funzione per il logout
-    function logout() {
-        // Rimuovi lo stato di autenticazione
-        sessionStorage.removeItem('adminAuthenticated');
-        
-        // Mostra il form di login
-        showLoginForm();
-    }
+});
