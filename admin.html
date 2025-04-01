@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pannello Amministratore - Prenotazione Prelievi</title>
     <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,9 +23,11 @@
             <div id="adminDashboard">
                 <div class="dashboard-header">
                     <h2>Gestione Prenotazioni</h2>
-                    <div class="dashboard-actions">
+                    <div class="dashboard-actions admin-controls">
+                        <button id="syncBtn" class="btn-primary"><i class="fas fa-sync-alt"></i> Sincronizza</button>
                         <button id="refreshBtn" class="btn-primary"><i class="fas fa-sync-alt"></i> Aggiorna</button>
                         <button id="logoutBtn" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Esci</button>
+                        <!-- L'indicatore di sincronizzazione verrà aggiunto qui via JavaScript -->
                     </div>
                 </div>
                 
